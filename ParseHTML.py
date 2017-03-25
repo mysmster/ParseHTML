@@ -14,6 +14,7 @@ for item_lxml in firm_list_lxml:
     # парсим карточку фирмы
     page_firm = requests.get(firm_link).text
     document_firm = lxml.html.fromstring(page)
-    firm_cart_lxml = document.xpath('//ul[@class = "listoption"]')
-    firm_site = document.xpath('//id("description")/x:div[1]/x:ul/x:li[6]')
-    print (firm_site)
+    #firm_cart_lxml = document.xpath('//ul[@class = "listoption"]')
+    firm_cart_lxml = document.xpath('//div[@class = "container"]')
+    for i in firm_cart_lxml:
+        print(i.xpath('div')[0])
