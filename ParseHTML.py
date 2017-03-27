@@ -18,7 +18,9 @@ for item_lxml in firm_list_lxml:
     soup = BeautifulSoup(page_firm)
     firm_cart_soup = soup.find('div', {'class': 'org-Details'})
     firm_cart_address = soup.find('ul', {'class': 'list-border'}).find('li').text
-    firm_cart_li = soup.find_all('ul', {'class': 'list-border'})
+    firm_cart_li = soup.find('ul', {'class': 'list-border'})
+    for i in firm_cart_li.findAll('li'):
+        print(i)
 
     # document_firm = lxml.html.fromstring(page_firm)
     # firm_cart_lxml = document.xpath('//div[@class = "org-Details"]')
