@@ -1,4 +1,4 @@
-import lxml.html
+import lxml.htmlfrom bs4 import BeautifulSoup
 import requests
 
 #page = requests.get('https://moscowinfo24.ru/prodazha-i-obsluzhivanie-liftov-v-moskve/').text
@@ -13,8 +13,8 @@ for item_lxml in firm_list_lxml:
     print ('%s %s'%(firm_name,firm_link))
 
     # парсим карточку фирмы
-    document_firm = lxml.html.fromstring(page)
     page_firm = requests.get(firm_link).text
-    firm_cart_lxml = document.xpath('//div[@class = "col-sm-8"]')
+    document_firm = lxml.html.fromstring(page_firm)
+    firm_cart_lxml = document.xpath('//i[@class = "icon-map"]')
     for i in firm_cart_lxml:
         print(i.xpath('/li/text()')[0])
