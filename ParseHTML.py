@@ -9,9 +9,13 @@ def GetFirmEMail(firm_site):
     # если не находим, ищем ссылку контакты
 
     main_page_firm = requests.get(firm_site).text
-    soup = BeautifulSoup(page_firm, "html.parser")
-    re.findall("/.+@.+\..+/i",main_page_firm)
-
+    soup = BeautifulSoup(main_page_firm, "html.parser")
+    p = re.compile(r"/.+@.+\..+/i", re.IGNORECASE | re.MULTILINE | re.DOTALL)
+    mail_mail = p.findall(main_page_firm)
+    if mail_mail:
+        # адрес есть на главной странице
+    else:
+        # надо искать адрес в контактах
     return ""
 
 output_file = open("lifts.csv", "wb")
