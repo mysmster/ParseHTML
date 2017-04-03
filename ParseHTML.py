@@ -10,7 +10,7 @@ def GetFirmEMail(firm_site):
 
     main_page_firm = requests.get(firm_site).text
     soup = BeautifulSoup(main_page_firm, "html.parser")
-    p = re.compile(r"/.+@.+\..+/i", re.IGNORECASE | re.MULTILINE | re.DOTALL)
+    p = re.compile(r"([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}", re.IGNORECASE | re.MULTILINE | re.DOTALL)
     mail_mail = p.findall(main_page_firm)
     if mail_mail:
         # адрес есть на главной странице
