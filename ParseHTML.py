@@ -10,13 +10,15 @@ def GetFirmEMail(firm_site):
 
     main_page_firm = requests.get(firm_site).text
     soup = BeautifulSoup(main_page_firm, "html.parser")
-    p = re.compile(r"([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}", re.IGNORECASE | re.MULTILINE | re.DOTALL)
-    mail_mail = p.findall(main_page_firm)
+    p = re.compile(r"([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}", re.MULTILINE)
+    mail_mail = p.finditer(main_page_firm)
     if mail_mail:
         # адрес есть на главной странице
+        str_mail = ",".join([m.group() for m in mail_mail])
     else:
         # надо искать адрес в контактах
-    return ""
+        str_mails = ""
+    return str_mails
 
 output_file = open("lifts.csv", "wb")
 csv_out = csv.writer(output_file, delimiter=';', quoting=csv.QUOTE_MINIMAL)
