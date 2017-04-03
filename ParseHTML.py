@@ -17,6 +17,13 @@ def GetFirmEMail(firm_site):
         str_mail = ",".join([m.group() for m in mail_mail])
     else:
         # надо искать адрес в контактах
+        p = re.compile(r"Контакты", re.MULTILINE)
+        mail_mail = p.finditer(main_page_firm)
+        for m in mail_mail:
+            print (m.span())
+            m_block = main_page_firm[m.span()[0] - 64:m.span()[1]]
+            print(m_block)
+            print(re.search(r'href="(.*)"', m_block))
         str_mails = ""
     return str_mails
 
