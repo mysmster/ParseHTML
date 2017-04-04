@@ -8,15 +8,23 @@ def GetFirmEMail(firm_site):
     # ищем на ней почту
     # если не находим, ищем ссылку контакты
 
-    main_page_firm = requests.get(firm_site).text
-    soup = BeautifulSoup(main_page_firm, "html.parser")
+    try:
+        main_page_firm = requests.get(firm_site).text
+    except:
+        return ""
+
+    # очистка от тегов для удобства поиска
+    p = re.compile(r'<.*?>')
+    main_page_firm =  p.sub('', main_page_firm)
+    # поиск почтового адреса
     p = re.compile(r"([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}", re.MULTILINE)
     mail_mail = p.finditer(main_page_firm)
     if mail_mail:
         # адрес есть на главной странице
         str_mail = ",".join([m.group() for m in mail_mail])
-    else:
+    if str_mail == "":
         # надо искать адрес в контактах
+        # контактная
         p = re.compile(r"Контакты", re.MULTILINE)
         mail_mail = p.finditer(main_page_firm)
         for m in mail_mail:
@@ -53,7 +61,7 @@ for item_lxml in firm_list_lxml:
         # нужно только первое двоеточие, останые должны остаться в val
         pos = i_text.find(":")
         par = str(i_text[:pos])
-        val = str(i_text[pos:])
+        val = str(i_text[pos+1:])
         if par == "Адрес":
             firm_address = val
         elif par == "Телефон":
