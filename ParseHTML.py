@@ -31,16 +31,22 @@ def GetFirmEMail(firm_site):
         mail_mail = p.finditer(main_page_firm)
         for m in mail_mail:
             #print (m.span())
-            m_block = main_page_firm[m.span()[0] - 64:m.span()[1]]
+            m_block = main_page_firm[m.span()[0] - 64:m.span()[0]]
             #print(m_block)
             lst_href = re.findall(r'href="(.*)"', m_block)
-        str_mails = GetFirmEMail(firm_site+lst_href[0])
+            if lst_href:
+                if firm_site[-1] != '/':
+                    firm_site = firm_site + '/'
+                str_href = lst_href[0] if not '"' in lst_href[0] else lst_href[0][:lst_href[0].find('"')]
+                if str_href not in firm_site:
+                    str_cont_ref = firm_site+str_href if not ":" in str_href else str_href
+                    str_mails = str_mails + " " + GetFirmEMail(str_cont_ref)
     return str_mails
 
 output_file = open("lifts.csv", "wb")
 csv_out = csv.writer(output_file, delimiter=';', quoting=csv.QUOTE_MINIMAL)
 # page = requests.get('https://moscowinfo24.ru/prodazha-i-obsluzhivanie-liftov-v-moskve/').text
-page = open('c:\\downloads\\lifts2.htm', encoding='utf-8').read()
+page = open('lifts2.htm', encoding='utf-8').read()
 document = BeautifulSoup(page, "html.parser")
 
 firm_list_lxml = document.findAll('h4',{'class' : 'job-title'})
