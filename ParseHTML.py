@@ -8,31 +8,33 @@ def GetFirmEMail(firm_site):
     # ищем на ней почту
     # если не находим, ищем ссылку контакты
 
+    str_mails = ""
+
     try:
         main_page_firm = requests.get(firm_site).text
     except:
-        return ""
+        return str_mails
 
-    # очистка от тегов для удобства поиска
+    # очистка от тегов для удобства поиска и возможных тего внутри почты
     p = re.compile(r'<.*?>')
-    main_page_firm =  p.sub('', main_page_firm)
+    main_page_firm_text = p.sub('', main_page_firm)
     # поиск почтового адреса
     p = re.compile(r"([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}", re.MULTILINE)
-    mail_mail = p.finditer(main_page_firm)
+    mail_mail = p.finditer(main_page_firm_text)
     if mail_mail:
         # адрес есть на главной странице
-        str_mail = ",".join([m.group() for m in mail_mail])
-    if str_mail == "":
+        str_mails = ",".join([m.group() for m in mail_mail])
+    if str_mails == "":
         # надо искать адрес в контактах
         # контактная
-        p = re.compile(r"Контакты", re.MULTILINE)
+        p = re.compile(r"(Контакты|Контактная информация)", re.MULTILINE)
         mail_mail = p.finditer(main_page_firm)
         for m in mail_mail:
-            print (m.span())
+            #print (m.span())
             m_block = main_page_firm[m.span()[0] - 64:m.span()[1]]
-            print(m_block)
-            print(re.search(r'href="(.*)"', m_block))
-        str_mails = ""
+            #print(m_block)
+            lst_href = re.findall(r'href="(.*)"', m_block)
+        str_mails = GetFirmEMail(firm_site+lst_href[0])
     return str_mails
 
 output_file = open("lifts.csv", "wb")
@@ -60,8 +62,8 @@ for item_lxml in firm_list_lxml:
         i_text = i.text.strip()
         # нужно только первое двоеточие, останые должны остаться в val
         pos = i_text.find(":")
-        par = str(i_text[:pos])
-        val = str(i_text[pos+1:])
+        par = str(i_text[:pos]).strip()
+        val = str(i_text[pos+1:]).strip()
         if par == "Адрес":
             firm_address = val
         elif par == "Телефон":
