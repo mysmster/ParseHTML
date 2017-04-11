@@ -12,7 +12,8 @@ def GetFirmEMail(firm_site):
 
     try:
         main_page_firm = requests.get(firm_site).text
-    except:
+    except requests.exceptions.RequestException as err:
+        print(err)
         return str_mails
 
     # очистка от тегов для удобства поиска и возможных тего внутри почты
